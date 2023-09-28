@@ -8,6 +8,7 @@ import 'package:tiktok_clone/features/main_navigation/widgets/nav_tab.dart';
 import 'package:tiktok_clone/features/main_navigation/widgets/post_video_button.dart';
 import 'package:tiktok_clone/features/users/user_profile_screen.dart';
 import 'package:tiktok_clone/features/videos/video_timeline_screen.dart';
+import 'package:tiktok_clone/utils.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
@@ -17,35 +18,7 @@ class MainNavigationScreen extends StatefulWidget {
 }
 
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
-  int _selectedIndex = 4;
-
-  final screens = [
-    const Center(
-      child: Text(
-        "Home",
-      ),
-    ),
-    const Center(
-      child: Text(
-        "Discover",
-      ),
-    ),
-    const Center(
-      child: Text(
-        "Search",
-      ),
-    ),
-    const Center(
-      child: Text(
-        "Inbox",
-      ),
-    ),
-    const Center(
-      child: Text(
-        "Profile",
-      ),
-    ),
-  ];
+  int _selectedIndex = 1;
 
   void _onTap(int index) {
     setState(() {
@@ -57,9 +30,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => Scaffold(
-          appBar: AppBar(
-            title: const Text("Record video"),
-          ),
+          appBar: AppBar(title: const Text('Record video')),
         ),
         fullscreenDialog: true,
       ),
@@ -68,33 +39,36 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = isDarkMode(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: _selectedIndex == 0 ? Colors.black : Colors.white,
-      body: Stack(children: [
-        Offstage(
-          offstage: _selectedIndex != 0,
-          child: const VideoTimelineScreen(),
+      backgroundColor:
+          _selectedIndex == 0 || isDark ? Colors.black : Colors.white,
+      body: Stack(
+        children: [
+          Offstage(
+            offstage: _selectedIndex != 0,
+            child: const VideoTimelineScreen(),
+          ),
+          Offstage(
+            offstage: _selectedIndex != 1,
+            child: const DiscoverScreen(),
+          ),
+          Offstage(
+            offstage: _selectedIndex != 3,
+            child: const InboxScreen(),
+          ),
+          Offstage(
+            offstage: _selectedIndex != 4,
+            child: const UserProfileScreen(),
+          )
+        ],
+      ),
+      bottomNavigationBar: Container(
+        color: _selectedIndex == 0 || isDark ? Colors.black : Colors.white,
+        padding: const EdgeInsets.only(
+          bottom: Sizes.size32,
         ),
-        Offstage(
-          offstage: _selectedIndex != 1,
-          child: const DiscoverScreen(),
-        ),
-        Offstage(
-          offstage: _selectedIndex != 2,
-          child: screens[_selectedIndex],
-        ),
-        Offstage(
-          offstage: _selectedIndex != 3,
-          child: const InboxScreen(),
-        ),
-        Offstage(
-          offstage: _selectedIndex != 4,
-          child: const UserProfileScreen(),
-        ),
-      ]),
-      bottomNavigationBar: BottomAppBar(
-        color: _selectedIndex == 0 ? Colors.black : Colors.white,
         child: Padding(
           padding: const EdgeInsets.all(Sizes.size12),
           child: Row(
@@ -137,7 +111,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                 selectedIcon: FontAwesomeIcons.solidUser,
                 onTap: () => _onTap(4),
                 selectedIndex: _selectedIndex,
-              )
+              ),
             ],
           ),
         ),

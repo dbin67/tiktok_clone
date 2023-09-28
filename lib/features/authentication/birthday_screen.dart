@@ -34,9 +34,7 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
       MaterialPageRoute(
         builder: (context) => const InterestsScreen(),
       ),
-      (route) {
-        return false;
-      },
+      (route) => false,
     );
   }
 
@@ -49,7 +47,9 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Sign up"),
+        title: const Text(
+          "Sign up",
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(
@@ -92,21 +92,21 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
               ),
               cursorColor: Theme.of(context).primaryColor,
             ),
-            Gaps.v16,
+            Gaps.v28,
             GestureDetector(
-                onTap: _onNextTap, child: const FormButton(disabled: false)),
+              onTap: _onNextTap,
+              child: const FormButton(disabled: false),
+            ),
           ],
         ),
       ),
       bottomNavigationBar: SizedBox(
         height: 300,
-        child: BottomAppBar(
-          child: CupertinoDatePicker(
-            maximumDate: initialDate,
-            initialDateTime: initialDate,
-            mode: CupertinoDatePickerMode.date,
-            onDateTimeChanged: _setTextFieldDate,
-          ),
+        child: CupertinoDatePicker(
+          maximumDate: initialDate,
+          initialDateTime: initialDate,
+          mode: CupertinoDatePickerMode.date,
+          onDateTimeChanged: _setTextFieldDate,
         ),
       ),
     );

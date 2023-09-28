@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/utils.dart';
 
 class PostVideoButton extends StatelessWidget {
-  const PostVideoButton({
-    super.key,
-    required this.inverted,
-  });
+  const PostVideoButton({super.key, required this.inverted});
 
   final bool inverted;
 
   @override
   Widget build(BuildContext context) {
+    final isDark = isDarkMode(context);
     return Stack(
       clipBehavior: Clip.none,
       children: [
@@ -26,7 +25,7 @@ class PostVideoButton extends StatelessWidget {
             decoration: BoxDecoration(
               color: const Color(0xff61D4F0),
               borderRadius: BorderRadius.circular(
-                Sizes.size11,
+                Sizes.size8,
               ),
             ),
           ),
@@ -42,7 +41,7 @@ class PostVideoButton extends StatelessWidget {
             decoration: BoxDecoration(
               color: Theme.of(context).primaryColor,
               borderRadius: BorderRadius.circular(
-                Sizes.size11,
+                Sizes.size8,
               ),
             ),
           ),
@@ -53,16 +52,18 @@ class PostVideoButton extends StatelessWidget {
             horizontal: Sizes.size12,
           ),
           decoration: BoxDecoration(
-              color: inverted ? Colors.black : Colors.white,
-              borderRadius: BorderRadius.circular(
-                Sizes.size8,
-              )),
+            color: !inverted || isDark ? Colors.white : Colors.black,
+            borderRadius: BorderRadius.circular(
+              Sizes.size6,
+            ),
+          ),
           child: Center(
-              child: FaIcon(
-            FontAwesomeIcons.plus,
-            color: inverted ? Colors.white : Colors.black,
-            size: Sizes.size16 + Sizes.size2,
-          )),
+            child: FaIcon(
+              FontAwesomeIcons.plus,
+              color: !inverted || isDark ? Colors.black : Colors.white,
+              size: 18,
+            ),
+          ),
         )
       ],
     );

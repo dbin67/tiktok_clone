@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/utils.dart';
 
 class ActivityScreen extends StatefulWidget {
   const ActivityScreen({super.key});
@@ -43,17 +44,13 @@ class _ActivityScreenState extends State<ActivityScreen>
 
   bool _showBarrier = false;
 
-  void _onDismissed(String notification) {
-    _notifications.remove(notification);
-    setState(() {});
-  }
+  late final AnimationController _animationController = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 200),
+  );
 
-  late final AnimationController _animationController;
-
-  late final Animation<double> _arrowAnimation = Tween(
-    begin: 0.0,
-    end: 0.5,
-  ).animate(_animationController);
+  late final Animation<double> _arrowAnimation =
+      Tween(begin: 0.0, end: 0.5).animate(_animationController);
 
   late final Animation<Offset> _panelAnimation = Tween(
     begin: const Offset(0, -1),
@@ -65,19 +62,9 @@ class _ActivityScreenState extends State<ActivityScreen>
     end: Colors.black38,
   ).animate(_animationController);
 
-  @override
-  void initState() {
-    super.initState();
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 200),
-    );
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
+  void _onDismissed(String notification) {
+    _notifications.remove(notification);
+    setState(() {});
   }
 
   void _toggleAnimations() async {
@@ -86,25 +73,30 @@ class _ActivityScreenState extends State<ActivityScreen>
     } else {
       _animationController.forward();
     }
+
     setState(() {
       _showBarrier = !_showBarrier;
     });
   }
 
   @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final isDark = isDarkMode(context);
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
         title: GestureDetector(
           onTap: _toggleAnimations,
           child: Row(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text(
-                "All activity",
-              ),
+              const Text("All activity"),
               Gaps.h2,
               RotationTransition(
                 turns: _arrowAnimation,
@@ -149,7 +141,7 @@ class _ActivityScreenState extends State<ActivityScreen>
                       child: FaIcon(
                         FontAwesomeIcons.checkDouble,
                         color: Colors.white,
-                        size: Sizes.size32,
+                        size: Sizes.size24,
                       ),
                     ),
                   ),
@@ -163,7 +155,7 @@ class _ActivityScreenState extends State<ActivityScreen>
                       child: FaIcon(
                         FontAwesomeIcons.trashCan,
                         color: Colors.white,
-                        size: Sizes.size32,
+                        size: Sizes.size24,
                       ),
                     ),
                   ),
@@ -173,9 +165,11 @@ class _ActivityScreenState extends State<ActivityScreen>
                       width: Sizes.size52,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Colors.white,
+                        color: isDark ? Colors.grey.shade800 : Colors.white,
                         border: Border.all(
-                          color: Colors.grey.shade400,
+                          color: isDark
+                              ? Colors.grey.shade800
+                              : Colors.grey.shade400,
                           width: Sizes.size1,
                         ),
                       ),
@@ -188,11 +182,10 @@ class _ActivityScreenState extends State<ActivityScreen>
                     title: RichText(
                       text: TextSpan(
                         text: "Account updates:",
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black,
-                          fontSize: Sizes.size16,
-                        ),
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: Sizes.size16,
+                            color: isDark ? null : Colors.black),
                         children: [
                           const TextSpan(
                             text: " Upload longer videos",
@@ -203,8 +196,8 @@ class _ActivityScreenState extends State<ActivityScreen>
                           TextSpan(
                             text: " $notification",
                             style: TextStyle(
-                              color: Colors.grey.shade500,
                               fontWeight: FontWeight.normal,
+                              color: Colors.grey.shade500,
                             ),
                           ),
                         ],
@@ -215,7 +208,7 @@ class _ActivityScreenState extends State<ActivityScreen>
                       size: Sizes.size16,
                     ),
                   ),
-                ),
+                )
             ],
           ),
           if (_showBarrier)
@@ -227,14 +220,14 @@ class _ActivityScreenState extends State<ActivityScreen>
           SlideTransition(
             position: _panelAnimation,
             child: Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
+              decoration: BoxDecoration(
+                color: Theme.of(context).appBarTheme.backgroundColor,
+                borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(
-                    Sizes.size4,
+                    Sizes.size5,
                   ),
                   bottomRight: Radius.circular(
-                    Sizes.size4,
+                    Sizes.size5,
                   ),
                 ),
               ),
@@ -245,15 +238,16 @@ class _ActivityScreenState extends State<ActivityScreen>
                     ListTile(
                       title: Row(
                         children: [
-                          FaIcon(
+                          Icon(
                             tab["icon"],
-                            color: Colors.black,
                             size: Sizes.size16,
                           ),
                           Gaps.h20,
                           Text(
                             tab["title"],
-                            style: const TextStyle(fontWeight: FontWeight.bold),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ],
                       ),
